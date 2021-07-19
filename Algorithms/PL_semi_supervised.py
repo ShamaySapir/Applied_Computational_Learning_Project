@@ -33,7 +33,6 @@ class PLSemiSupervised():
         while self.num_of_total_epoch >= self.curr_run:
             model,evaluation_params, evaluation_df, labeled_avg_loss, mixed_avg_loss= self.train_data_mix(X_labeled, X_unlabeled, Y_labeled, Y_unlabeled)
             self.loss_list.append(self.calculate_loss(self.curr_epoch, labeled_avg_loss, mixed_avg_loss))
-            self.curr_epoch = self.curr_epoch + 1
             final_evaluation_df = final_evaluation_df.append(evaluation_df)
             self.curr_run = self.curr_run + 1
         return model, evaluation_params, final_evaluation_df, np.mean(self.loss_list)
@@ -121,6 +120,7 @@ class PLSemiSupervised():
                                                         best_lr, best_batch_size,training_time, inference_time)
             self.curr_epoch = self.curr_epoch + 1
             evaluation_df = model_evaluation.get_result_df()
+        self.curr_epoch = 1
         return final_model, final_lr, evaluation_df
 
     def evaluate_model(self, X_test_model, Y_test_model, model, num_of_round):

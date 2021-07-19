@@ -51,6 +51,7 @@ class ImprovedPLSemiSupervised():
                 # Train the model with mixed labels
                 mixed_best_model, mixed_evaluation_params, mixed_avg_loss, mixed_evaluation_df = self.train_model_for_PL(X_mixed_data, Y_mixed_data)
                 evaluation_df = evaluation_df.append(mixed_evaluation_df)
+            self.curr_epoch = self.curr_epoch + 1
         return mixed_best_model, mixed_evaluation_params, evaluation_df, labeled_avg_loss, mixed_avg_loss
 
     def calculate_loss(self, labeled_avg_loss, mixed_avg_loss):
@@ -111,7 +112,7 @@ class ImprovedPLSemiSupervised():
                 final_lr = best_lr
             model_evaluation.get_result_to_final_table(self.curr_epoch, y_valid, yhat, y_proba,
                                                     best_lr, best_batch_size, training_time, inference_time)
-            self.curr_epoch = self.curr_epoch + 1
+
             evaluation_df = model_evaluation.get_result_df()
         return final_model, final_lr, evaluation_df
 
