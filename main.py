@@ -19,6 +19,7 @@ def show_model_evaluation(list, dataset_name):
     #print('AUROC: %.3f (%.3f)' % (np.mean(list[4]), np.std(list[4])))
     return np.mean(list[0])
 
+
 def discretization(data):
     # convert categorial variables into numeric values
     label_encoder = LabelEncoder()
@@ -27,6 +28,11 @@ def discretization(data):
         data[category] = label_encoder.fit_transform(data[category])
     # print("data was successfully discretized")
     return data
+
+
+def print_to_csv(df, outdir, f_name):
+    fullname = os.path.join(outdir, f_name)
+    df.to_csv(fullname)
 
 
 if __name__ == "__main__":
@@ -72,17 +78,6 @@ if __name__ == "__main__":
         print("The Improved Pseudo-Label Semi-Supervised Avrage Loss is: " + improved_pl_avg_loss)
         print("The Improved Pseudo-Label Semi-Supervised Avrage Accuracy is: " + improved_pl_model_mean_accuracy)
 
-    f_name = "evaluation_supervided.csv"
-    fullname = os.path.join(outdir, f_name)
-    Supervised_df.to_csv(fullname)
-
-    f_name = "evaluation_pl_semi.csv"
-    fullname = os.path.join(outdir, f_name)
-    Pl_semi_df.to_csv(fullname)
-
-    f_name = "evaluation_improve_pl_semi.csv"
-    fullname = os.path.join(outdir, f_name)
-    Improved_pl_df.to_csv(fullname)
-    # total_evaluation_df = total_evaluation_df.append(sm_results)
-    # total_evaluation_df = total_evaluation_df.append(pl_ssm_results)
-    # total_evaluation_df.to_csv("/Results/evaluation")
+    print_to_csv(Supervised_df, outdir, "evaluation_supervided.csv")
+    print_to_csv(Pl_semi_df, outdir, "evaluation_pl_semi.csv")
+    print_to_csv(Improved_pl_df, outdir, "evaluation_improve_pl_semi.csv")
