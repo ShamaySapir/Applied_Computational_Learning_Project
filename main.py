@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 from pandas import DataFrame
 from sklearn.preprocessing import LabelEncoder
+
+from Algorithms.Improved_pl_semi_supervised import ImprovedPLSemiSupervised
+
 np.seterr(divide='ignore', invalid='ignore')
 from Algorithms.Supervised import SupervisedModel
 from Algorithms.PL_semi_supervised import PLSemiSupervised
@@ -33,7 +36,6 @@ if __name__ == "__main__":
     # supervised_model.model_name
 
     # Load data and preaper it
-    total_evaluation_df = DataFrame()
     Supervised_df = DataFrame()
     Pl_semi_df = DataFrame()
     Improved_pl_df = DataFrame()
@@ -59,6 +61,17 @@ if __name__ == "__main__":
         print("The Pseudo-Label Semi-Supervised Avrage Loss is: "+pl_ssm_avg_loss)
         print("The Pseudo-Label Semi-Supervised Avrage Accuracy is: "+pl_semi_model_mean_accuracy)
 
+        improved_pl_model = ImprovedPLSemiSupervised(10, file_name)
+        improved_pl_best_model, improved_pl_evaluation_params, improved_pl_evaluation_df, improved_pl_avg_loss = improved_pl_model.main_process(
+            data)
+        improved_pl_evaluation_df = improved_pl_evaluation_df.groupby(
+            by=['Dataset Name', 'Algorithm Name', 'Cross Validation index']).mean()
+        Improved_pl_df = Improved_pl_df.append(improved_pl_evaluation_df)
+        improved_pl_model_mean_accuracy = show_model_evaluation(improved_pl_evaluation_params, file_name)
+        print(improved_pl_evaluation_df)
+        print("The Improved Pseudo-Label Semi-Supervised Avrage Loss is: " + improved_pl_avg_loss)
+        print("The Improved Pseudo-Label Semi-Supervised Avrage Accuracy is: " + improved_pl_model_mean_accuracy)
+
     f_name = "evaluation_supervided.csv"
     fullname = os.path.join(outdir, f_name)
     Supervised_df.to_csv(fullname)
@@ -67,6 +80,9 @@ if __name__ == "__main__":
     fullname = os.path.join(outdir, f_name)
     Pl_semi_df.to_csv(fullname)
 
+    f_name = "evaluation_improve_pl_semi.csv"
+    fullname = os.path.join(outdir, f_name)
+    Improved_pl_df.to_csv(fullname)
     # total_evaluation_df = total_evaluation_df.append(sm_results)
     # total_evaluation_df = total_evaluation_df.append(pl_ssm_results)
     # total_evaluation_df.to_csv("/Results/evaluation")
