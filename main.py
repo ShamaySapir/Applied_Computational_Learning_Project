@@ -27,6 +27,11 @@ def discretization(data):
 
 
 if __name__ == "__main__":
+    outdir = './Results'
+    if not os.path.exists(outdir):
+        os.mkdir(outdir)
+    # supervised_model.model_name
+
     # Load data and preaper it
     total_evaluation_df = DataFrame()
     sm_results = DataFrame()
@@ -41,7 +46,9 @@ if __name__ == "__main__":
         sm_results = sm_results.append(sm_evaluation_df)
         model_mean_accuracy = show_model_evaluation(sm_evaluation_params, file_name)
         print(sm_evaluation_df)
-        sm_evaluation_df.to_csv("/Results/evaluation_" + supervised_model.model_name+".csv")
+        f_name = "evaluation_supervided.csv"
+        fullname = os.path.join(outdir, f_name)
+        sm_evaluation_df.to_csv(fullname)
 
         #pseudo label semi supervised model
         # pl_semi_supervised_model = PLSemiSupervised(2, file_name)
