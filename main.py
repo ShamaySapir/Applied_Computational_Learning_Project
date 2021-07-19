@@ -1,35 +1,56 @@
-from tensorflow.keras import models, layers, optimizers
-from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.model_selection import StratifiedKFold
-from sklearn.model_selection import cross_val_score
+import os
 import pandas as pd
 import numpy as np
+from pandas import DataFrame
+from sklearn.preprocessing import LabelEncoder
+np.seterr(divide='ignore', invalid='ignore')
+from Algorithms.Supervised import SupervisedModel
+from Algorithms.PL_semi_supervised import PLSemiSupervised
+
+def show_model_evaluation(list, dataset_name):
+    print(f'==== {dataset_name} ===')
+    print('Accuracy: %.3f (%.3f)' % (np.mean(list[0]), np.std(list[0])))
+    print('F1: %.3f (%.3f)' % (np.mean(list[1]), np.std(list[1])))
+    print('Sensitivity: %.3f (%.3f)' % (np.mean(list[2]), np.std(list[2])))
+    print('Specificity: %.3f (%.3f)' % (np.mean(list[3]), np.std(list[3])))
+    #print('AUROC: %.3f (%.3f)' % (np.mean(list[4]), np.std(list[4])))
+    return np.mean(list[0])
 
 
-# define model
-def build_model():
-    model = models.Sequential()
-    model.add(layers.Dense(12, input_dim=8, activation='relu'))
-    model.add(layers.Dense(8, activation='relu'))
-    model.add(layers.Dense(1, activation='sigmoid'))
-    opt = optimizers.SGD(learning_rate=1.5)
-    model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
-    return model
+def discretization(data):
+    # convert categorial variables into numeric values
+    label_encoder = LabelEncoder()
+    discret_vec = data.columns
+    for category in discret_vec:
+        data[category] = label_encoder.fit_transform(data[category])
+    # print("data was successfully discretized")
+    return data
 
+if __name__ == "__main__":
+    # Load data and preaper it
+    total_evaluation_df = DataFrame()
+    sm_results = DataFrame()
+    pl_ssm_results = DataFrame()
+    files_names = os.listdir('./datasets/')
+    for file_name in files_names:
+        data = pd.read_csv('./datasets/'+file_name)
+        data = discretization(data)
+        #supervised model
+        # supervised_model = SupervisedModel()
+        # sm_best_model, sm_evaluation_params, sm_evaluation_df = supervised_model.main_process(file_name , data)
+        # sm_results = sm_results.append(sm_evaluation_df)
+        # model_mean_accuracy = show_model_evaluation(sm_evaluation_params, file_name)
+        # print(sm_evaluation_df)
 
-if __name__ == '__main__':
-    # load csv
-    data = pd.read_csv('./datasets/abalon.csv')
-    print(data.head())
-    X = data.drop(columns=['class'])
-    print(X.head())
-    y = data['class']
-    # build model
-    model = build_model()
-    model.summary()
-    # use epochs=10, batch_size=32, verbose=1
-    estimator = KerasClassifier(build_fn=build_model, epochs=10, batch_size=32, verbose=1)
-    # perform StratifiedKFold with 10 folds
-    kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=np.random.seed(7))
-    results = cross_val_score(estimator, X, y, cv=kfold)
-    print("mean accuracy: %.2f%%" % (results.mean() * 100))
+        #pseudo label semi supervised model
+        pl_semi_supervised_model = PLSemiSupervised(10, file_name)
+        pl_ssm_best_model, pl_ssm_evaluation_params, pl_ssm_evaluation_df, pl_ssm_avg_loss = pl_semi_supervised_model.main_process(data)
+        pl_ssm_results = pl_ssm_results.append(pl_ssm_evaluation_df)
+        model_mean_accuracy = show_model_evaluation(pl_ssm_evaluation_params, file_name)
+        print(pl_ssm_evaluation_df)
+        pl_ssm_evaluation_df.to_csv("/Results/evaluation_"+pl_semi_supervised_model.model_name)
+
+    #
+    # total_evaluation_df = total_evaluation_df.append(sm_results)
+    # total_evaluation_df = total_evaluation_df.append(pl_ssm_results)
+    # total_evaluation_df.to_csv("/Results/evaluation")
