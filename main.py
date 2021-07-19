@@ -53,8 +53,11 @@ if __name__ == "__main__":
         pl_ssm_best_model, pl_ssm_evaluation_params, pl_ssm_evaluation_df, pl_ssm_avg_loss = pl_semi_supervised_model.main_process(data)
         pl_ssm_evaluation_df = pl_ssm_evaluation_df.groupby(by=['Dataset Name', 'Algorithm Name', 'Cross Validation index']).mean()
         Pl_semi_df = Pl_semi_df.append(pl_ssm_evaluation_df)
-        model_mean_accuracy = show_model_evaluation(pl_ssm_evaluation_params, file_name)
+        pl_semi_model_mean_accuracy = show_model_evaluation(pl_ssm_evaluation_params, file_name)
         print(Pl_semi_df)
+
+        print("The Pseudo-Label Semi-Supervised Avrage Loss is: "+pl_ssm_avg_loss)
+        print("The Pseudo-Label Semi-Supervised Avrage Accuracy is: "+pl_semi_model_mean_accuracy)
 
     f_name = "evaluation_supervided.csv"
     fullname = os.path.join(outdir, f_name)
