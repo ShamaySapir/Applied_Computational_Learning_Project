@@ -61,13 +61,14 @@ if __name__ == "__main__":
         improved_pl_model = ImprovedPLSemiSupervised(10,file_name)
         improved_pl_best_model, improved_pl_evaluation_params, improved_pl_evaluation_df, improved_pl_avg_loss = improved_pl_model.main_process(
             data)
+        improved_pl_evaluation_df = improved_pl_evaluation_df.groupby(
+            by=['Dataset Name', 'Algorithm Name', 'Cross Validation index']).mean()
         improved_pl_results = improved_pl_results.append(improved_pl_evaluation_df)
         improved_pl_model_mean_accuracy = show_model_evaluation(improved_pl_evaluation_params, file_name)
         print(improved_pl_evaluation_df)
         print("The Improved Pseudo-Label Semi-Supervised Avrage Loss is: " + improved_pl_avg_loss)
         print("The Improved Pseudo-Label Semi-Supervised Avrage Accuracy is: " + improved_pl_model_mean_accuracy)
-        improved_pl_evaluation_df = improved_pl_evaluation_df.groupby(
-            by=['Dataset Name', 'Algorithm Name', 'Cross Validation index']).mean()
+
         improved_pl_evaluation_df.to_csv("/Results/" + improved_pl_model.model_name + ".csv")
     #
     # total_evaluation_df = total_evaluation_df.append(sm_results)
