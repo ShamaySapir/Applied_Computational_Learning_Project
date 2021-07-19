@@ -70,8 +70,7 @@ class SupervisedModel():
                 final_model = best_model
                 final_lr = best_lr
             model_evaluation.get_result_to_final_table(current_fold, y_valid, yhat, y_proba,
-                                                       {"learning_rate": best_lr, "batch_size": best_batch_size},
-                                                       training_time, inference_time)
+                                                        best_lr, best_batch_size, training_time, inference_time)
             current_fold = current_fold + 1
             evaluation_df = model_evaluation.get_result_df()
         return final_model, final_lr, evaluation_df

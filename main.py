@@ -16,7 +16,6 @@ def show_model_evaluation(list, dataset_name):
     #print('AUROC: %.3f (%.3f)' % (np.mean(list[4]), np.std(list[4])))
     return np.mean(list[0])
 
-
 def discretization(data):
     # convert categorial variables into numeric values
     label_encoder = LabelEncoder()
@@ -25,6 +24,7 @@ def discretization(data):
         data[category] = label_encoder.fit_transform(data[category])
     # print("data was successfully discretized")
     return data
+
 
 if __name__ == "__main__":
     # Load data and preaper it
@@ -41,15 +41,16 @@ if __name__ == "__main__":
         sm_results = sm_results.append(sm_evaluation_df)
         model_mean_accuracy = show_model_evaluation(sm_evaluation_params, file_name)
         print(sm_evaluation_df)
-        sm_evaluation_df.to_csv("/Results/evaluation_" + supervised_model.model_name)
+        sm_evaluation_df.to_csv("/Results/evaluation_" + supervised_model.model_name+".csv")
 
         #pseudo label semi supervised model
-        # pl_semi_supervised_model = PLSemiSupervised(10, file_name)
+        # pl_semi_supervised_model = PLSemiSupervised(2, file_name)
         # pl_ssm_best_model, pl_ssm_evaluation_params, pl_ssm_evaluation_df, pl_ssm_avg_loss = pl_semi_supervised_model.main_process(data)
         # pl_ssm_results = pl_ssm_results.append(pl_ssm_evaluation_df)
         # model_mean_accuracy = show_model_evaluation(pl_ssm_evaluation_params, file_name)
         # print(pl_ssm_evaluation_df)
-        # pl_ssm_evaluation_df.to_csv("/Results/evaluation_"+pl_semi_supervised_model.model_name)
+        # pl_ssm_evaluation_df = pl_ssm_evaluation_df.groupby(by=['Dataset Name', 'Algorithm Name', 'Cross Validation index']).mean()
+        # pl_ssm_evaluation_df.to_csv("/Results/evaluation_"+pl_semi_supervised_model.model_name+".csv")
 
     #
     # total_evaluation_df = total_evaluation_df.append(sm_results)

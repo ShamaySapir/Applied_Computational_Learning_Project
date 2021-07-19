@@ -21,7 +21,6 @@ class ImprovedPLSemiSupervised():
 
 
     def main_process(self, data):
-        final_evaluation_df = DataFrame()
         last_column_name = data.columns[len(data.columns) - 1]
         X, y = data.drop(columns=[last_column_name]), data[last_column_name]
         self.objective.set_num_of_classes(len(np.unique(y)))
@@ -111,8 +110,7 @@ class ImprovedPLSemiSupervised():
                 final_model = best_model
                 final_lr = best_lr
             model_evaluation.get_result_to_final_table(self.curr_epoch, y_valid, yhat, y_proba,
-                                                       {"learning_rate": best_lr, "batch_size": best_batch_size},
-                                                       training_time, inference_time)
+                                                    best_lr, best_batch_size, training_time, inference_time)
             self.curr_epoch = self.curr_epoch + 1
             evaluation_df = model_evaluation.get_result_df()
         return final_model, final_lr, evaluation_df

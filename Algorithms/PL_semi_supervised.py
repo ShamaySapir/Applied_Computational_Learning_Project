@@ -21,6 +21,7 @@ class PLSemiSupervised():
         self.objective = mu.Objective(num_of_epochs=1)
         self.loss_list = []
         self.curr_epoch = 1
+        self.curr_run = 1
 
     def main_process(self, data):
         final_evaluation_df = DataFrame()
@@ -29,18 +30,19 @@ class PLSemiSupervised():
         self.objective.set_num_of_classes(len(np.unique(y)))
         X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=0.2, random_state=10)
         X_labeled, X_unlabeled, Y_labeled, Y_unlabeled = train_test_split(X_train, Y_train, test_size=0.6, random_state=10)
-        while self.num_of_total_epoch >= self.curr_epoch:
+        while self.num_of_total_epoch >= self.curr_run:
             model,evaluation_params, evaluation_df, labeled_avg_loss, mixed_avg_loss= self.train_data_mix(X_labeled, X_unlabeled, Y_labeled, Y_unlabeled)
             self.loss_list.append(self.calculate_loss(self.curr_epoch, labeled_avg_loss, mixed_avg_loss))
             self.curr_epoch = self.curr_epoch + 1
             final_evaluation_df = final_evaluation_df.append(evaluation_df)
+            self.curr_run = self.curr_run + 1
         return model, evaluation_params, final_evaluation_df, np.mean(self.loss_list)
 
     def train_data_mix(self, X_labeled, X_unlabeled, Y_labeled, Y_unlabeled):
         evaluation_df = DataFrame()
         # Train the model with only labeled data
         labeled_best_model, labeled_evaluation_params, labeled_avg_loss, labeled_evaluation_df = self.train_model_for_PL(X_labeled, Y_labeled)
-        # evaluation_df = evaluation_df.append(labeled_evaluation_df)
+        evaluation_df = evaluation_df.append(labeled_evaluation_df)
         # use the model to create Pseudo labels
         y_ul_pred = np.argmax(labeled_best_model.predict(X_unlabeled), axis=1)
         Y_unlabeled = pd.Series(data=y_ul_pred, index=Y_unlabeled.index)
