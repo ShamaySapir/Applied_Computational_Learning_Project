@@ -77,7 +77,7 @@ class ImprovedPLSemiSupervised():
             study = optuna.create_study(direction="maximize")
             # ToDo - change to 50 trials
             self.objective.set_params(x_train, y_train, x_valid, y_valid)
-            study.optimize(self.objective, n_trials=5)
+            study.optimize(self.objective, n_trials=50)
             trial = study.best_trial
             trial_duration_list.append(trial.duration)
             if trial.value >= best_score:
