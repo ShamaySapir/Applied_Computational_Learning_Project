@@ -11,7 +11,7 @@ import model_util as mu
 class SupervisedModel():
     def __init__(self):
         self.model_name = 'Supervized'
-        self.objective = mu.Objective(num_of_epochs=3)
+        self.objective = mu.Objective(num_of_epochs=10)
 
     def main_process(self, dataset_name, data):
         last_column_name = data.columns[len(data.columns) - 1]
@@ -35,7 +35,7 @@ class SupervisedModel():
             study = optuna.create_study(direction="maximize")
             # ToDo - change to 50 trials
             self.objective.set_params(x_train, y_train, x_valid, y_valid)
-            study.optimize(self.objective, n_trials=50)
+            study.optimize(self.objective, n_trials=3)
             trial = study.best_trial
             trial_duration_list.append(trial.duration)
             if trial.value >= best_score:

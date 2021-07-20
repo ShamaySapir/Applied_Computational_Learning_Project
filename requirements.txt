@@ -1,6 +1,6 @@
 keras-nightly
+numpy
 tensorflow
 pandas
-numpy
 optuna
 sklearn
