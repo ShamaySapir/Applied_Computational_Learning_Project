@@ -62,6 +62,8 @@ if __name__ == "__main__":
         model_mean_accuracy = show_model_evaluation(sm_evaluation_params, file_name)
         print(Supervised_df)
 
+        print_to_csv(Supervised_df, outdir, "evaluation_supervided" + file_num + ".csv")
+
         # pseudo label semi supervised model
         pl_semi_supervised_model = PLSemiSupervised(2, file_name)
         pl_ssm_best_model, pl_ssm_evaluation_params, pl_ssm_evaluation_df, pl_ssm_avg_loss = pl_semi_supervised_model.main_process(data)
@@ -72,6 +74,8 @@ if __name__ == "__main__":
 
         print("The Pseudo-Label Semi-Supervised Avrage Loss is: "+pl_ssm_avg_loss)
         print("The Pseudo-Label Semi-Supervised Avrage Accuracy is: "+pl_semi_model_mean_accuracy)
+
+        print_to_csv(Pl_semi_df, outdir, "evaluation_pl_semi" + file_num + ".csv")
 
         improved_pl_model = ImprovedPLSemiSupervised(10, file_name)
         improved_pl_best_model, improved_pl_evaluation_params, improved_pl_evaluation_df, improved_pl_avg_loss = improved_pl_model.main_process(
@@ -84,6 +88,6 @@ if __name__ == "__main__":
         print("The Improved Pseudo-Label Semi-Supervised Avrage Loss is: " + improved_pl_avg_loss)
         print("The Improved Pseudo-Label Semi-Supervised Avrage Accuracy is: " + improved_pl_model_mean_accuracy)
 
-    print_to_csv(Supervised_df, outdir, "evaluation_supervided" + file_num + ".csv")
-    print_to_csv(Pl_semi_df, outdir, "evaluation_pl_semi" + file_num + ".csv")
-    print_to_csv(Improved_pl_df, outdir, "evaluation_improve_pl_semi" + file_num + ".csv")
+        print_to_csv(Improved_pl_df, outdir, "evaluation_improve_pl_semi" + file_num + ".csv")
+
+
