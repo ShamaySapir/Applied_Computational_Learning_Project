@@ -8,5 +8,5 @@ To run the project:
      - Pseudo-Label Semi-Supervised Model
      - Improved Pseudo-Label Semi-Supervised Model
      
-  This is an implementation of the semi-supervised aproach called pseudo-label using Keras. 
+  This is an implementation of the semi-supervised approach called pseudo-label using Keras. 
   This algorithm is based on article "Pseudo-Label : The Simple and Efficient Semi-Supervised Learning Method for Deep Neural Networks" by Dong-Hyun Lee (@donghyunlee).
